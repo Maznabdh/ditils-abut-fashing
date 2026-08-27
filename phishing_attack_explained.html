@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>هجوم التصيّد — دليل مرئي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-body: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+
+    --bg: #faf7f5;
+    --surface: #ffffff;
+    --surface-elevated: #ffffff;
+    --border: rgba(0, 0, 0, 0.08);
+    --border-bright: rgba(0, 0, 0, 0.15);
+    --text: #1c1917;
+    --text-dim: #6b7280;
+
+    --accent: #c2410c;
+    --accent-dim: rgba(194, 65, 12, 0.10);
+    --node-a: #c2410c;
+    --node-a-dim: rgba(194, 65, 12, 0.10);
+    --node-b: #65a30d;
+    --node-b-dim: rgba(101, 163, 13, 0.10);
+    --node-c: #0369a1;
+    --node-c-dim: rgba(3, 105, 161, 0.10);
+    --danger: #be123c;
+    --danger-dim: rgba(190, 18, 60, 0.10);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1410;
+      --surface: #2a1f18;
+      --surface-elevated: #332620;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-bright: rgba(255, 255, 255, 0.14);
+      --text: #f5ede3;
+      --text-dim: #a89888;
+
+      --accent: #f97316;
+      --accent-dim: rgba(249, 115, 22, 0.16);
+      --node-a: #f97316;
+      --node-a-dim: rgba(249, 115, 22, 0.16);
+      --node-b: #84cc16;
+      --node-b-dim: rgba(132, 204, 22, 0.14);
+      --node-c: #38bdf8;
+      --node-c-dim: rgba(56, 189, 248, 0.14);
+      --danger: #fb7185;
+      --danger-dim: rgba(251, 113, 133, 0.14);
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(at 15% 0%, var(--danger-dim) 0%, transparent 45%),
+      radial-gradient(at 85% 30%, var(--accent-dim) 0%, transparent 50%);
+    color: var(--text);
+    font-family: var(--font-body);
+    padding: 40px 24px;
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-wrap: break-word;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeScale {
+    from { opacity: 0; transform: scale(0.94); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .animate {
+    animation: fadeUp 0.5s ease-out both;
+    animation-delay: calc(var(--i, 0) * 0.07s);
+  }
+  .animate-scale {
+    animation: fadeScale 0.45s ease-out both;
+    animation-delay: calc(var(--i, 0) * 0.07s);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  .container { max-width: 1080px; margin: 0 auto; }
+
+  .hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 44px 44px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; left: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--danger), var(--accent));
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--danger);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--danger);
+  }
+  h1 {
+    font-size: clamp(32px, 5vw, 46px);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .lead {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 70ch;
+  }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .kpi-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 20px;
+    border-right: 3px solid var(--danger);
+  }
+  .kpi-card:nth-child(2) { border-right-color: var(--accent); }
+  .kpi-card:nth-child(3) { border-right-color: var(--node-c); }
+  .kpi-card__value {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .kpi-card__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: var(--node-a);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before {
+    content: '';
+    width: 8px; height: 8px; border-radius: 50%;
+    background: currentColor;
+  }
+  h2 {
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .desc {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-dim);
+    max-width: 75ch;
+    margin-bottom: 28px;
+  }
+
+  section { margin-bottom: 56px; }
+
+  /* ---- How phishing works: flow ---- */
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    position: relative;
+  }
+  .flow-step {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 18px;
+    padding: 18px 0;
+    position: relative;
+  }
+  .flow-step__num {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+    border: 1.5px solid var(--accent);
+    flex-shrink: 0;
+    z-index: 2;
+  }
+  .flow-step__num--danger {
+    background: var(--danger-dim);
+    color: var(--danger);
+    border-color: var(--danger);
+  }
+  .flow-step__num--victim {
+    background: var(--node-c-dim);
+    color: var(--node-c);
+    border-color: var(--node-c);
+  }
+  .flow-step__body {
+    padding-top: 4px;
+  }
+  .flow-step__title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .flow-step__text {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+  .flow-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    right: 22px;
+    top: 54px;
+    bottom: -18px;
+    width: 1.5px;
+    background: var(--border-bright);
+    z-index: 1;
+  }
+
+  .ve-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+  }
+  .ve-card--elevated {
+    background: var(--surface-elevated);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .ve-card__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ---- Phishing email mock ---- */
+  .email-mock {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 28px 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  .email-mock__header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--accent-dim);
+  }
+  .email-mock__row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 10px;
+    padding: 6px 0;
+    align-items: baseline;
+  }
+  .email-mock__row span:first-child {
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .email-mock__body {
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .fake-link {
+    color: var(--node-c);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    position: relative;
+    padding: 1px 3px;
+    border-radius: 3px;
+    background: var(--danger-dim);
+  }
+  .fake-link:hover { background: rgba(190,18,60,0.18); }
+  .fake-link::after {
+    content: '⚠ رابط مزيف';
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--danger);
+    position: absolute;
+    top: -14px; right: 0;
+    background: var(--surface);
+    border: 1px solid var(--danger);
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .fake-link:hover::after { opacity: 1; }
+  .red-flag {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  .alert-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--danger);
+    background: var(--danger-dim);
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-right: 6px;
+  }
+
+  /* ---- Types grid ---- */
+  .types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .type-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    border-top: 3px solid var(--accent);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .type-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+  .type-card:nth-child(1) { border-top-color: var(--danger); }
+  .type-card:nth-child(2) { border-top-color: var(--accent); }
+  .type-card:nth-child(3) { border-top-color: var(--node-c); }
+  .type-card:nth-child(4) { border-top-color: #7c3aed; }
+  .type-card:nth-child(5) { border-top-color: var(--node-b); }
+  .type-card:nth-child(6) { border-top-color: #d97706; }
+  .type-card__tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .type-card__title {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .type-card__text {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+
+  /* ---- Signs table ---- */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .data-table thead th {
+    background: var(--surface-elevated);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-align: right;
+    padding: 14px 18px;
+    border-bottom: 2px solid var(--border-bright);
+    white-space: nowrap;
+  }
+  .data-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+  }
+  .data-table tbody tr:nth-child(even) { background: var(--accent-dim); }
+  .data-table tbody tr:hover { background: var(--border); }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--danger-dim);
+    color: var(--danger);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 6px;
+  }
+  .status--danger { background: var(--danger-dim); color: var(--danger); }
+  .status--warn { background: rgba(217,119,6,0.12); color: #d97706; }
+
+  /* ---- Protection cards ---- */
+  .protect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .protect-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-right: 3px solid var(--node-b);
+  }
+  .protect-card__icon {
+    width: 38px; height: 38px;
+    border-radius: 9px;
+    background: var(--node-b-dim);
+    color: var(--node-b);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+  }
+  .protect-card__icon svg { width: 20px; height: 20px; }
+  .protect-card__title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .protect-card__text {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-right: 3px solid var(--node-c);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    margin-top: 24px;
+  }
+  .callout strong { color: var(--text); }
+  .callout code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--node-c-dim);
+    color: var(--node-c);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  /* ---- Social buttons ---- */
+  .social-section {
+    margin-top: 48px;
+    text-align: center;
+  }
+  .social-section__title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: var(--text-dim);
+    margin-bottom: 18px;
+  }
+  .social-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+  }
+  .social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+  .social-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+  }
+  .social-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  .social-btn--facebook { color: #1877F2; border-color: rgba(24,119,242,0.3); }
+  .social-btn--facebook:hover { background: rgba(24,119,242,0.08); }
+  .social-btn--telegram { color: #0088cc; border-color: rgba(0,136,204,0.3); }
+  .social-btn--telegram:hover { background: rgba(0,136,204,0.08); }
+
+  /* ---- Footer ---- */
+  .author-card {
+    margin-top: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .author-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1877F2, #0088cc);
+  }
+  .author-card__avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1877F2, #0088cc);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    margin-bottom: 14px;
+  }
+  .author-card__name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .author-card__handle {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 18px;
+  }
+  .author-card__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .author-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .author-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .author-link svg { width: 18px; height: 18px; }
+  .author-link--fb { color: #1877F2; }
+  .author-link--tg { color: #0088cc; }
+
+  footer {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.8;
+  }
+  footer .copyright {
+    font-size: 13px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 768px) {
+    body { padding: 20px 14px; }
+    .hero { padding: 32px 24px; }
+    .flow-step { grid-template-columns: 44px 1fr; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <header class="hero animate-scale" style="--i:0">
+    <div class="eyebrow">دليل مرئي · الأمن السيبراني</div>
+    <h1>هجوم التصيّد (Phishing)</h1>
+    <p class="lead">
+      هجوم التصيّد هو محاولة احتيالية يتنكّر فيها المهاجم بهوية موثوقة — بنك، شركة، أو شخص معروف —
+      لخداع الضحية وجعلها تشارك بيانات حسّاسة مثل كلمات المرور، أرقام البطاقات البنكية، أو رموز التحقّق،
+      أو لتنزيل برمجيات خبيثة على جهازها.
+    </p>
+
+    <div class="kpi-row">
+      <div class="kpi-card animate" style="--i:2">
+        <div class="kpi-card__value">3.4B</div>
+        <div class="kpi-card__label">رسائل تصيّد تُرسل يوميًا حول العالم</div>
+      </div>
+      <div class="kpi-card animate" style="--i:3">
+        <div class="kpi-card__value">90%</div>
+        <div class="kpi-card__label">من اختراقات البيانات تبدأ بهجوم تصيّد</div>
+      </div>
+      <div class="kpi-card animate" style="--i:4">
+        <div class="kpi-card__value">$4.88M</div>
+        <div class="kpi-card__label">متوسط تكلفة خرق بيانات واحد</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOW IT WORKS -->
+  <section class="animate" style="--i:5">
+    <div class="section-label">آلية الهجوم</div>
+    <h2>كيف يحدث هجوم التصيّد؟</h2>
+    <p class="desc">
+      يمرّ الهجوم بخمس مراحل متتابعة، تبدأ بتحضير المهاجم وتنتهي بنجاح السرقة أو فشلها. كلما
+      توقف المستخدم مبكّرًا في هذه السلسلة، كان الأذن أصغر.
+    </p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-step__num flow-step__num--danger">1</div>
+        <div class="flow-step__body">
+          <div class="flow-step__title">الاستطلاع والتحضير</div>
+          <div class="flow-step__text">
+            يختار المهاجم هدفًا (فردًا أو مؤسسة) ويجمع معلومات عنه من الشبكات الاجتماعية والويب:
+            اسم البنك، مديره، زملائه، الخدمات التي يستخدمها. ثم يجهّز رسالة مقنعة ونطاقًا مشابهًا
+            لنطاق الجهة الأصلية مثل <code style="font-family:var(--font-mono);font-size:12px;background:var(--danger-dim);color:var(--danger);padding:2px 6px;border-radius:4px">bank-verify.com</code>.
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step__num flow-step__num--danger">2</div>
+        <div class="flow-step__body">
+          <div class="flow-step__title">إرسال الطُّعم</div>
+          <div class="flow-step__text">
+            تُرسل الرسالة عبر البريد الإلكتروني أو الرسائل النصية أو واتساب، وقد تحمل عنوانًا مُلحًّا
+            مثل «حسابك سيُعلّق خلال 24 ساعة» أو «تم رصد عملية دفع غير معروفة» لإثارة القلق ودفع
+            الضحية للنقر بسرعة دون تفكير.
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step__num flow-step__num--victim">3</div>
+        <div class="flow-step__body">
+          <div class="flow-step__title">الوقوع في الفخ</div>
+          <div class="flow-step__text">
+            ينقر المستخدم على الرابط أو يفتح المرفق. ينقله الرابط إلى صفحة تسجيل دخول مزيفة تشبه
+            تمامًا صفحة البنك أو الخدمة الأصلية، أو يُشغّل المرفق برمجية خبيثة تسرق البيانات صامتةً.
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step__num flow-step__num--victim">4</div>
+        <div class="flow-step__body">
+          <div class="flow-step__title">تسليم البيانات</div>
+          <div class="flow-step__text">
+            يُدخل المستخدم اسم المستخدم وكلمة المرور ورمز التحقق على الصفحة المزيفة، ظانًا أنه
+            يسجّل الدخول للموقع الحقيقي. تُرسل هذه البيانات فورًا إلى خادم المهاجم.
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step__num flow-step__num--danger">5</div>
+        <div class="flow-step__body">
+          <div class="flow-step__title">الاستغلال</div>
+          <div class="flow-step__text">
+            يستخدم المهاجم البيانات للدخول إلى الحساب الحقيقي وتغيير كلمة المرور، وتحويل أموال،
+            أو اختراق حسابات أخرى تستخدم ذات الكلمة. في المؤسسات قد يتحرّك أفقيًا داخل الشبكة
+            لاختراق أنظمة أعمق.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAMPLE EMAIL -->
+  <section class="animate" style="--i:6">
+    <div class="section-label" style="color:var(--danger)">مثال عملي</div>
+    <h2>هكذا تبدو رسالة التصيّد</h2>
+    <p class="desc">
+      في ما يلي محاكاة لرسالة تصيّد تقليدية. مرّر المؤشر فوق الرابط الملوّن بالأحمر لرؤية المؤشر
+      الذي يكشف حقيقته. لاحظ كيف تخلق الرسالة شعورًا بالإلحاح وتستخدم اسم بنك معروف.
+    </p>
+
+    <div class="email-mock">
+      <div class="email-mock__header">
+        <div class="email-mock__row">
+          <span>من:</span>
+          <span class="red-flag">خدمة البنك الأهلي <no-reply@ahli-bank-secure.com></span>
+        </div>
+        <div class="email-mock__row">
+          <span>إلى:</span>
+          <span>user@gmail.com</span>
+        </div>
+        <div class="email-mock__row">
+          <span>الموضوع:</span>
+          <span class="red-flag">⚠ إجراء عاجل: تم تقييد حسابك البنكي</span>
+        </div>
+      </div>
+      <div class="email-mock__body">
+        <p>عميلنا العزيز،</p>
+        <p style="margin-top:12px">
+          لقد رصدنا محاولة دخول غير معروفة إلى حسابك من جهاز لم يُستخدم من قبل. لحماية أموالك،
+          تم <span class="red-flag">تقييد حسابك مؤقتًا</span>. يجب عليك التحقق من هويتك خلال
+          <span class="red-flag">24 ساعة</span> وإلّا سيتم إيقاف الحساب نهائيًا.
+        </p>
+        <p style="margin-top:12px">
+          يُرجى النقر على الرابط التالي لإعادة تفعيل حسابك:
+        </p>
+        <p style="margin-top:10px">
+          <span class="alert-box">⚠ تنبيه</span>
+          <span class="fake-link">https://ahli-bank-secure.com/verify</span>
+        </p>
+        <p style="margin-top:14px;color:var(--text-dim);font-size:13px">
+          مع تحيات قسم الأمن، البنك الأهلي
+        </p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>أبرز علامات الاحتيال في الرسالة أعلاه:</strong> النطاق
+      <code>ahli-bank-secure.com</code> ليس النطاق الرسمي للبنك — عادةً ما يكون البنك الحقيقي على نطاق
+      قصير ومباشر مثل <code>alahli.com</code>. كما أن الرسالة تخلق إلحاحًا مصطنعًا (24 ساعة) وتستخدم
+      تحذيرًا مرعبًا (تقييد الحساب) لتعجيز الضحية عن التفكير النقدي قبل النقر.
+    </div>
+  </section>
+
+  <!-- TYPES -->
+  <section class="animate" style="--i:7">
+    <div class="section-label">الأنواع الشائعة</div>
+    <h2>أنواع هجمات التصيّد</h2>
+    <p class="desc">
+      تتطوّر أساليب التصيّد باستمرار، لكنها تشترك جميعها في مبدأ واحد: انتحال هوية موثوقة لخداع الضحية.
+    </p>
+
+    <div class="types-grid">
+      <div class="type-card">
+        <div class="type-card__tag">الأكثر شيوعًا</div>
+        <div class="type-card__title">تصيّد بالبريد</div>
+        <div class="type-card__text">
+          رسائل بريد إلكتروني جماعية تنتحل هوية بنك أو شركة شهيرة، تطلب من المستخدم النقر على رابط
+          أو تحديث بياناته. واسعة الانتشار لكنها سهلة الكشف نسبيًا.
+        </div>
+      </div>
+      <div class="type-card">
+        <div class="type-card__tag">موجّه</div>
+        <div class="type-card__title">التصيّد المستهدف (Spear)</div>
+        <div class="type-card__text">
+          رسالة مُفصّلة خصيصًا لشخص بعينه (موظف، مدير) باستخدام معلومات حقيقية عنه جمعها المهاجم
+          مسبقًا، ما يجعلها مقنعة جدًا وصعبة الكشف.
+        </div>
+      </div>
+      <div class="type-card">
+        <div class="type-card__tag">عالية المخاطر</div>
+        <div class="type-card__title">اصطياد الحيتان (Whaling)</div>
+        <div class="type-card__text">
+          نوع من التصيّد المستهدف يركّز على كبار المسؤولين (المدراء التنفيذيون، المدراء الماليون)
+          بهدف سرقة مبالغ كبيرة أو بيانات استراتيجية.
+        </div>
+      </div>
+      <div class="type-card">
+        <div class="type-card__tag">صوتي</div>
+        <div class="type-card__title">Vishing (التصيّد الهاتفي)</div>
+        <div class="type-card__text">
+          مكالمة هاتفية ينتحل فيها المهاجم صوت موظف بنك أو دعم فني، ويطلب رمز التحقق أو بيانات
+          البطاقة بحجّة «تأكيد الهوية» أو «حل مشكلة تقنية».
+        </div>
+      </div>
+      <div class="type-card">
+        <div class="type-card__tag">نصّي</div>
+        <div class="type-card__title">Smishing (التصيّد بالرسائل)</div>
+        <div class="type-card__text">
+          رسالة نصية قصيرة (SMS أو واتساب) تبلغ المستخدم بـ«شحنة قادمة» أو «جائزة» وتطلب النقر على
+          رابط أو الاتصال برقم، وغالبًا ما تُرسل لملايين الأرقام عشوائيًا.
+        </div>
+      </div>
+      <div class="type-card">
+        <div class="type-card__tag">متقدّم</div>
+        <div class="type-card__title">تصيّد بصيد الموقع (Angler)</div>
+        <div class="type-card__text">
+          يحدث عبر حسابات وسائل التواصل الاجتماعي ينتحل فيها المهاجم حساب دعم عملاء رسمي، ويردّ على
+          شكاوى المستخدمين طالبًا بياناتهم الخاصة ظاهريًا لمساعدتهم.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WARNING SIGNS -->
+  <section class="animate" style="--i:8">
+    <div class="section-label">علامات الإنذار</div>
+    <h2>كيف تكتشف رسالة التصيّد؟</h2>
+    <p class="desc">
+      هذه العلامات لا تظهر جميعها في كل رسالة، لكن وجود أكثر من واحدة منها مؤشّر قوي على أن الرسالة
+      احتيالية. قف وارفض قبل أي نقر.
+    </p>
+
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>العلامة</th>
+              <th>مثال من رسالة احتيالية</th>
+              <th>مستوى الخطورة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>إلحاح مصطنع</strong></td>
+              <td>«حسابك سيُعلّق خلال 24 ساعة»</td>
+              <td><span class="status status--danger">خطر مرتفع</span></td>
+            </tr>
+            <tr>
+              <td><strong>نطاق غير رسمي</strong></td>
+              <td><code>bank-verify-login.com</code> بدل <code>bank.com</code></td>
+              <td><span class="status status--danger">خطر مرتفع</span></td>
+            </tr>
+            <tr>
+              <td><strong>أخطاء إملائية</strong></td>
+              <td>«نرجو التأكيد ع lieutenant حسابكم»</td>
+              <td><span class="status status--warn">مشبوه</span></td>
+            </tr>
+            <tr>
+              <td><strong>تحية عامة</strong></td>
+              <td>«عميلنا العزيز» دون ذكر اسمك</td>
+              <td><span class="status status--warn">مشبوه</span></td>
+            </tr>
+            <tr>
+              <td><strong>طلب بيانات حسّاسة</strong></td>
+              <td>أرسل كلمة المرور أو رمز OTP الكامل</td>
+              <td><span class="status status--danger">خطر مرتفع</span></td>
+            </tr>
+            <tr>
+              <td><strong>مرفق غير متوقّع</strong></td>
+              <td>ملف <code>.zip</code> أو <code>.exe</code> من مرسل مجهول</td>
+              <td><span class="status status--danger">خطر مرتفع</span></td>
+            </tr>
+            <tr>
+              <td><strong>عنوان مُرجِع مختلف</strong></td>
+              <td>الاسم المعروض «البنك» لكن البريد <code>x7k2@gmail.com</code></td>
+              <td><span class="status status--danger">خطر مرتفع</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTECTION -->
+  <section class="animate" style="--i:9">
+    <div class="section-label">الوقاية</div>
+    <h2>كيف تحمي نفسك؟</h2>
+    <p class="desc">
+      الحماية من التصيّد ممكنة بدرجة كبيرة عبر عادات بسيطة وإعدادات تقنية. الطبقات التالية تعمل
+      معًا؛ كل طبقة تضيفها تقلّل احتمال وقوع الاختراق.
+    </p>
+
+    <div class="protect-grid">
+      <div class="protect-card">
+        <div class="protect-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="protect-card__title">التحقق ثنائي العامل</div>
+        <div class="protect-card__text">فعّل 2FA على كل حساب مهم. حتى لو سُرقت كلمة المرور فلن يستطيع المهاجم الدخول دون الرمز.</div>
+      </div>
+      <div class="protect-card">
+        <div class="protect-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="protect-card__title">تدقيق الرابط</div>
+        <div class="protect-card__text">مرّر المؤشر فوق الرابط قبل النقر، وتحقّق من النطاق. افتح الموقع بكتابة عنوانه يدويًا لا بالنقر.</div>
+      </div>
+      <div class="protect-card">
+        <div class="protect-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </div>
+        <div class="protect-card__title">بطء وروية</div>
+        <div class="protect-card__text">الرسائل التي تستفزّك للتصرف فورًا احتيالية غالبًا. خذ وقتك، تحقّق من المصدر عبر قناة أخرى رسمية.</div>
+      </div>
+      <div class="protect-card">
+        <div class="protect-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg>
+        </div>
+        <div class="protect-card__title">مدير كلمات مرور</div>
+        <div class="protect-card__text">يحفظ كلمات مرور قوية مختلفة لكل موقع، ولا يدخلها إلّا على النطاق الصحيح — فينكشف الموقع المزيف تلقائيًا.</div>
+      </div>
+      <div class="protect-card">
+        <div class="protect-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+        </div>
+        <div class="protect-card__title">تحديث الأنظمة</div>
+        <div class="protect-card__text">حدّث المتصفّح ونظام التشغيل والبرامج باستمرار؛ التصحيحات الأمنية تسدّ الثغرات التي يستغلّها المهاجمون.</div>
+      </div>
+      <div class="protect-card">
+        <div class="protect-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="protect-card__title">الإبلاغ والحذف</div>
+        <div class="protect-card__text">أبلغ عن الرسالة الاحتيالية داخل تطبيق البريد ثم احذفها. في المؤسسات أبلغ فريق الأمن فورًا دون نقر أي شيء.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>قاعدة ذهبية:</strong> أي جهة رسمية محترمة (بنك، شركة، جهة حكومية) لن تطلب أبدًا كلمة
+      المرور الكاملة أو رمز التحقّق <code>OTP</code> عبر البريد أو الهاتف. إن طُلب منك ذلك، فاعلم
+      أنك أمام هجوم تصيّد — أوقف العملية فورًا.
+    </div>
+  </section>
+
+  <!-- SOCIAL BUTTONS -->
+  <div class="social-section animate" style="--i:10">
+    <div class="social-section__title">تواصل معنا</div>
+    <div class="social-buttons">
+      <a class="social-btn social-btn--facebook" href="https://www.facebook.com/profile.php?id=61580302440438&mibextid=ZbWKwL" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        فيسبوك
+      </a>
+      <a class="social-btn social-btn--telegram" href="https://t.me/Mazen_Soft" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .17.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.173-.18 3.073-2.814 3.132-3.053.008-.03.011-.141-.052-.2-.063-.058-.156-.038-.223-.023-.095.022-1.608 1.018-4.492 2.972-.426.292-.812.435-1.158.43-.38-.006-1.112-.215-1.654-.392-.667-.218-1.197-.333-1.152-.703.024-.195.288-.394.793-.598 3.107-1.354 5.178-2.248 6.312-2.683 3.011-1.253 3.637-1.472 4.045-1.479z"/></svg>
+        تيليجرام
+      </a>
+    </div>
+  </div>
+
+  <!-- AUTHOR CARD -->
+  <div class="author-card animate" style="--i:11">
+    <div class="author-card__avatar">M</div>
+    <div class="author-card__name">مازن عبده علي</div>
+    <div class="author-card__handle">Mazen Abdu Ali · @Mazen_Soft</div>
+    <div class="author-card__links">
+      <a class="author-link author-link--fb" href="https://www.facebook.com/profile.php?id=61580302440438&mibextid=ZbWKwL" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        حساب فيسبوك
+      </a>
+      <a class="author-link author-link--tg" href="https://t.me/Mazen_Soft" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .17.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.173-.18 3.073-2.814 3.132-3.053.008-.03.011-.141-.052-.2-.063-.058-.156-.038-.223-.023-.095.022-1.608 1.018-4.492 2.972-.426.292-.812.435-1.158.43-.38-.006-1.112-.215-1.654-.392-.667-.218-1.197-.333-1.152-.703.024-.195.288-.394.793-.598 3.107-1.354 5.178-2.248 6.312-2.683 3.011-1.253 3.637-1.472 4.045-1.479z"/></svg>
+        قناة تيليجرام
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="copyright">© 2026 مازن عبده علي — جميع الحقوق محفوظة</div>
+    دليل مرئي تعليمي حول هجمات التصيّد · الأرقام تقديرية لأغراض التوضيح ·
+    صُمّم بالاعتماد على ممارسات الأمن السيبراني المعتمدة
+  </footer>
+
+</div>
+</body>
+</html>
